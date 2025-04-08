@@ -36,27 +36,40 @@ git clone https://github.com/lmbautista/hireminator.git
 cd hireminator
 ```
 
-2.**Run service**
+2.**Create file .env and provide the necessary environment variables for docker-compose to work properly:**
+
+```text
+  RAILS_ENV=
+  DATABASE_USERNAME=
+  DATABASE_PASSWORD=
+  DATABASE_PORT=
+  OPENAI_API_KEY=
+  RAILS_ENCRYPTION_PRIMARY_KEY=
+  RAILS_ENCRYPTION_DETERMINISTIC_KEY=
+  RAILS_ENCRYPTION_KEY_DERIVATION_SALT=
+```
+
+3.**Run service**
 
 ```bash
   docker-compose down -v; docker-compose build; docker-compose up -d
 ```
 
-3.**Database creation**
+4.**Database creation**
 
 ```bash
   docker-compose exec run --rm rails db:create db:migrate
 ```
 
-4.**Database initialization**
+5.**Database initialization**
 
 ```bash
   rails db:seeds
 ```
 
-5.**Access app in <http://localhost:3000>**
+6.**Access app in <http://localhost:3000>**
 
-6.**Test suite execution**
+7.**Test suite execution**
 
 ```bash
   rails test
