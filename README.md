@@ -36,32 +36,27 @@ git clone https://github.com/lmbautista/hireminator.git
 cd hireminator
 ```
 
-2.**Database creation**
+2.**Run service**
 
 ```bash
-  rails db:create db:migrate
+  docker-compose down -v; docker-compose build; docker-compose up -d
 ```
 
-3.**Database initialization**
+3.**Database creation**
+
+```bash
+  docker-compose exec run --rm rails db:create db:migrate
+```
+
+4.**Database initialization**
 
 ```bash
   rails db:seeds
 ```
 
+5.**Access app in <http://localhost:3000>**
 
-4.**Run service**
-
-```bash
-docker run -it --rm \
-  -p 3000:3000 \
-  -v $(pwd):/app \
-  -e RAILS_ENV=development \
-  -e DATABASE_URL=postgres://postgres:password@host.docker.internal:5432/hireminator_development \
-  -e OPENAI_API_KEY=sk-xxxxx \
-  hireminator
-
-```
-4.**Test suite execution**
+6.**Test suite execution**
 
 ```bash
   rails test
