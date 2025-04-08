@@ -25,5 +25,13 @@ module Hireminator
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.active_record.encryption.primary_key = ENV.fetch("RAILS_ENCRYPTION_PRIMARY_KEY", nil)
+    config.active_record.encryption.deterministic_key = ENV.fetch(
+      "RAILS_ENCRYPTION_DETERMINISTIC_KEY", nil
+    )
+    config.active_record.encryption.key_derivation_salt = ENV.fetch(
+      "RAILS_ENCRYPTION_KEY_DERIVATION_SALT", nil
+    )
   end
 end
