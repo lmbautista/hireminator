@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_08_163330) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_08_163342) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_163330) do
     t.index ["initiator_format"], name: "index_audit_logs_on_initiator_format"
     t.index ["initiator_id"], name: "index_audit_logs_on_initiator_id"
     t.index ["status"], name: "index_audit_logs_on_status"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "use_case_id"
+    t.string "status", null: false
+    t.json "input", default: {}
+    t.json "output", default: {}
+    t.datetime "ended_at"
+    t.datetime "archived_at"
+    t.text "full_transcript"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["use_case_id"], name: "index_conversations_on_use_case_id"
+    t.index ["user_id"], name: "index_conversations_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -66,5 +81,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_08_163330) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "conversations", "use_cases"
+  add_foreign_key "conversations", "users"
   add_foreign_key "sessions", "users"
 end
