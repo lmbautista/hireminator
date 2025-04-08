@@ -12,6 +12,9 @@ module ActiveSupport
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 
+    ActiveRecord::Base.logger = nil
+    ActiveRecord::Migration.verbose = false
+
     # Add more helper methods to be used by all tests here...
   end
 end

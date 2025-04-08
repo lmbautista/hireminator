@@ -1,7 +1,7 @@
 class CreateAuditLogs < ActiveRecord::Migration[7.1]
   def change
     create_table :audit_logs do |t|
-      t.references :target, polymorphic: true, null: false
+      t.string :event, null: false
       t.string :status, null: false
       t.jsonb :context, default: {}, null: false
       t.text :message

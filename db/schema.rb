@@ -15,8 +15,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_07_220458) do
   enable_extension "plpgsql"
 
   create_table "audit_logs", force: :cascade do |t|
-    t.string "target_type", null: false
-    t.bigint "target_id", null: false
+    t.string "event", null: false
     t.string "status", null: false
     t.jsonb "context", default: {}, null: false
     t.text "message"
@@ -28,7 +27,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_07_220458) do
     t.index ["initiator_format"], name: "index_audit_logs_on_initiator_format"
     t.index ["initiator_id"], name: "index_audit_logs_on_initiator_id"
     t.index ["status"], name: "index_audit_logs_on_status"
-    t.index ["target_type", "target_id"], name: "index_audit_logs_on_target"
   end
 
 end
