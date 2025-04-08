@@ -19,8 +19,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_07_220458) do
     t.string "status", null: false
     t.jsonb "context", default: {}, null: false
     t.text "message"
-    t.string "initiator_id"
-    t.string "initiator_format"
+    t.string "initiator_id", null: false
+    t.string "initiator_format", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["context"], name: "index_audit_logs_on_context", using: :gin

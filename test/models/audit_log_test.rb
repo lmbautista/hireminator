@@ -37,10 +37,9 @@ class AuditLogTest < ActiveSupport::TestCase
   end
 
   test "invalid when not supported initiator_format" do
-    log = AuditLog.new(initiator_format: "wadus")
-
-    assert_not log.valid?
-    assert log.errors.added?(:initiator_format, :inclusion, value: "wadus")
+    assert_raises ArgumentError do
+      AuditLog.new(initiator_format: "wadus")
+    end
   end
 
   test "invalid when no event" do

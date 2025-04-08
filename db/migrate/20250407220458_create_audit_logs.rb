@@ -5,8 +5,8 @@ class CreateAuditLogs < ActiveRecord::Migration[7.1]
       t.string :status, null: false
       t.jsonb :context, default: {}, null: false
       t.text :message
-      t.string :initiator_id
-      t.string :initiator_format
+      t.string :initiator_id, null: false
+      t.string :initiator_format, null: false
 
       t.timestamps
     end

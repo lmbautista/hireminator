@@ -24,5 +24,5 @@ class AuditLog < ApplicationRecord
   validates :event, presence: true
   validates :initiator_format, presence: true, inclusion: { in: initiator_formats.keys }
   validates :initiator_id, presence: true
-  validates :status, presence: true, inclusion: { in: STATUSES }
+  validates :status, presence: true, inclusion: { in: statuses.keys }
 end
