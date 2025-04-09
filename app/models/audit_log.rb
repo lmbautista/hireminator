@@ -4,8 +4,8 @@ class AuditLog < ApplicationRecord
   # TODO: implement status machine concern to ensure valid transitions between statuses
   INITIATOR_FORMATS = [
     INITIATOR_HUMAN = "human",
-    INITIATOR_AI_AGENM = "ai-agent",
-    INITIATOR_INTERNAL_PROCESM = "internal-process"
+    INITIATOR_AI_AGENT = "ai-agent",
+    INITIATOR_INTERNAL_PROCESS = "internal-process"
   ].freeze
 
   enum(:initiator_format, INITIATOR_FORMATS.index_with { _1 })
