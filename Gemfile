@@ -19,7 +19,7 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
+gem "tailwindcss-rails", "4.2.2", platforms: :ruby
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -42,10 +42,12 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
+gem "ruby-openai"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "byebug"
   gem "debug", platforms: %i(mri mswin mswin64 mingw x64_mingw)
+  gem "minitest"
   gem "rubocop"
   gem "rubocop-rails"
 end

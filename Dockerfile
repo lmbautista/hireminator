@@ -1,18 +1,24 @@
 FROM ruby:3.1.0
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev curl postgresql-client
+RUN apt-get update -o Acquire::AllowInsecureRepositories=true \
+  && apt-get install -y --no-install-recommends \
+  build-essential \
+  libpq-dev \
+  curl \
+  libxml2-dev \
+  libxslt-dev \
+  zlib1g-dev \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN gem install bundler:2.3.11
 
 WORKDIR /app
 
-COPY Gemfile ./
+COPY Gemfile Gemfile.lock ./
 
-RUN bundle lock --add-platform x86_64-linux
+ENV NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 
-COPY Gemfile.lock ./
 RUN bundle _2.3.11_ install
-
-COPY . .
 
 RUN bundle exec rake assets:precompile || true
 
