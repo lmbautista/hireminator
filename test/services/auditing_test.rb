@@ -22,20 +22,21 @@ class AuditingTest < ActiveSupport::TestCase
     audit_log = nil
 
     assert_difference -> { AuditLog.count }, 1 do
-      wrapper.call do
+      response = wrapper.call do
         audit_log = AuditLog.last
 
         assert_equal "executing", audit_log.status
         assert_equal @params.as_json, audit_log.context
 
-        true
+        "done"
       end
+
+      assert response.success?
+      assert_kind_of String, response.value
     end
   end
 
   test "creates audit successfully when block success" do
-    result = nil
-
     assert_difference -> { AuditLog.count }, 1 do
       response = Auditing.new(
         event: @event,
@@ -44,12 +45,13 @@ class AuditingTest < ActiveSupport::TestCase
       ).call do
         "expected result"
       end
+
+      audit_log = AuditLog.last
+
+      assert response.success?
+      assert_equal "success", audit_log.status
+      assert_equal "expected result", response.value
     end
-
-    audit_log = AuditLog.last
-
-    assert_equal "success", audit_log.status
-    assert_equal "expected result", result
   end
 
   test "creates audit successfully when block fails" do
@@ -61,11 +63,13 @@ class AuditingTest < ActiveSupport::TestCase
       ).call do
         raise StandardError.new("Something went wrong")
       end
+
+      audit_log = AuditLog.last
+
+      assert response.failure?
+      assert_equal "Something went wrong", response.error
+      assert_equal "failed", audit_log.status
+      assert_match(/Something went wrong/, audit_log.message)
     end
-
-    audit_log = AuditLog.last
-
-    assert_equal "failed", audit_log.status
-    assert_match(/Something went wrong/, audit_log.message)
   end
 end

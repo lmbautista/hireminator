@@ -19,13 +19,15 @@ class Auditing
     begin
       result = block.call
       audit_log.update!(status: AuditLog::STATUS_SUCCESS)
-      result
+
+      Response.success(result)
     rescue StandardError => e
       audit_log.update!(
         status: AuditLog::STATUS_FAILED,
         message: context.merge(error: e.message)
       )
-      raise e
+
+      Response.failure(e.message)
     end
   end
 
