@@ -28,7 +28,7 @@ class UseCase < ApplicationRecord
 
   enum(:model, MODELS.index_with { _1 })
 
-  PROVIDERS = [PROVIDER_OPENAI = "openai"].freeze
+  PROVIDERS = [PROVIDER_OPENAI = "openai", PROVIDER_GEMINI = "gemini"].freeze
 
   enum(:provider, PROVIDERS.index_with { _1 })
 
