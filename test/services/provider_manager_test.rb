@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-# test/lib/provider_manager_test.rb
 require "test_helper"
 
 class ProviderManagerTest < ActiveSupport::TestCase
   def setup
     @user = User.create!(
-      name: "Luismi",
-      email: "luismi@hireminator.com",
+      name: "Wadus",
+      email: "wadus@example.com",
       password: SecureRandom.uuid,
       role: User::ROLE_RECRUITER
     )
@@ -23,39 +22,31 @@ class ProviderManagerTest < ActiveSupport::TestCase
 
     @conversation = Conversation.create!(
       user: @user,
-      status: Conversation::STATUS_OPENED,
-      use_case: UseCase.create!(
-        name: "Test case",
-        provider: "openai",
-        model: "gpt-4",
-        temperature: 0.7,
-        purpose: UseCase::PURPOSE_INTERVIEW,
-        initial_prompt: "Hello",
-        lang: "en"
-      )
+      use_case: @use_case,
+      status: Conversation::STATUS_OPENED
     )
-
-    @prompt = "Start prompt"
-    @role = "system"
   end
 
-  test "returns OpenAi provider when use_case provider is 'openai'" do
-    provider = ProviderManager.build(
-      conversation: @conversation,
-      prompt: @prompt,
-      role: @role
-    )
+  test "returns result from provider when provider is openai" do
+    mock_provider = Minitest::Mock.new
+    mock_provider.expect :call, Response.success("Hi there")
 
-    assert_instance_of Providers::OpenAi, provider
+    Providers::OpenAi.expects(:new).returns(mock_provider)
+
+    manager = ProviderManager.new(conversation: @conversation)
+
+    result = manager.call
+    assert result.success?
+    assert_equal "Hi there", result.value
+
+    mock_provider.verify
   end
 
-  test "raises generic error on unsupported provider" do
-    @conversation.use_case.assign_attributes(provider: "gemini")
+  test "raises NotImplementedError for gemini provider" do
+    @use_case.update!(provider: "gemini")
 
-    error = assert_raises(RuntimeError) do
-      ProviderManager.build(conversation: @conversation, prompt: @prompt, role: @role)
-    end
+    manager = ProviderManager.new(conversation: @conversation)
 
-    assert_match(/Unsupported LLM provider/, error.message)
+    assert_raises(NotImplementedError) { manager.call }
   end
 end

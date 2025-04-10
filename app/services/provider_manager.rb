@@ -1,17 +1,26 @@
 # frozen_string_literal: true
 
 class ProviderManager
-  def self.build(conversation:, prompt:, role:)
+  def initialize(conversation:)
+    @conversation = conversation
+  end
+
+  delegate :call, to: :provider_instance
+
+  private
+
+  def provider_instance
     provider = conversation.use_case.provider
-    case conversation.use_case.provider
+
+    case provider
     when "openai"
-      Providers::OpenAi.new(conversation:, prompt:, role:)
-    when "anthropic"
-      raise NotImplementedError.new("Anthropic client not implemented")
-    when "mistral"
-      raise NotImplementedError.new("Mistral client not implemented")
+      Providers::OpenAi.new(conversation: conversation)
+    when "gemini"
+      raise NotImplementedError.new("Gemini client not implemented")
     else
       raise "Unsupported LLM provider: #{provider}"
     end
   end
+
+  attr_reader :conversation
 end
