@@ -16,6 +16,13 @@ class UserTest < ActiveSupport::TestCase
     assert user.valid?
   end
 
+  test "to_initiator_data" do
+    user = User.new(@valid_attrs)
+    expected_initiator_data = AuditLog::InitiatorData.new(user.email, AuditLog::INITIATOR_HUMAN)
+
+    assert_equal expected_initiator_data, user.to_initiator_data
+  end
+
   test "invalid when name is blank" do
     user = User.new
 

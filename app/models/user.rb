@@ -19,4 +19,8 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
   validates :role, presence: true, inclusion: { in: ROLES }
+
+  def to_initiator_data
+    AuditLog::InitiatorData.new(email, AuditLog::INITIATOR_HUMAN)
+  end
 end
