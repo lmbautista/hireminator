@@ -20,7 +20,7 @@ class Auditing
       result = block.call
       audit_log.update!(status: AuditLog::STATUS_SUCCESS)
 
-      Response.success(result)
+      result
     rescue StandardError => e
       audit_log.update!(
         status: AuditLog::STATUS_FAILED,

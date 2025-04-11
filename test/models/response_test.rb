@@ -11,7 +11,6 @@ class ResponseTest < ActiveSupport::TestCase
     assert result.success?
     assert_not result.failure?
     assert_equal "ok", result.value
-    assert_nil result.error
   end
 
   test "failure response returns true for failure? and false for success?" do
@@ -19,8 +18,7 @@ class ResponseTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_not result.success?
-    assert_equal "error", result.error
-    assert_nil result.value
+    assert_equal "error", result.value
   end
 
   test "and_then yields to block when success" do
@@ -34,7 +32,7 @@ class ResponseTest < ActiveSupport::TestCase
     result = Response.failure("fail").and_then { |_| Response.success("should not run") }
 
     assert result.failure?
-    assert_equal "fail", result.error
+    assert_equal "fail", result.value
   end
 
   test "on_failure yields error when failure" do

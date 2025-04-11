@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class Response
-  attr_reader :value, :error
+  attr_reader :value
 
-  def initialize(success:, value: nil, error: nil)
+  def initialize(success:, value: nil)
     @success = success
     @value = value
-    @error = error
   end
 
   def self.success(value = nil)
@@ -14,7 +13,7 @@ class Response
   end
 
   def self.failure(error)
-    new(success: false, error: error)
+    new(success: false, value: error)
   end
 
   def success?
@@ -32,7 +31,7 @@ class Response
   end
 
   def on_failure
-    yield(error) if failure?
+    yield(value) if failure?
     self
   end
 

@@ -28,7 +28,7 @@ class AuditingTest < ActiveSupport::TestCase
         assert_equal "executing", audit_log.status
         assert_equal @params.as_json, audit_log.context
 
-        "done"
+        Response.success("expected done")
       end
 
       assert response.success?
@@ -43,7 +43,7 @@ class AuditingTest < ActiveSupport::TestCase
         params: @params,
         initiator_data: @initiator_data
       ).call do
-        "expected result"
+        Response.success("expected result")
       end
 
       audit_log = AuditLog.last
@@ -67,7 +67,7 @@ class AuditingTest < ActiveSupport::TestCase
       audit_log = AuditLog.last
 
       assert response.failure?
-      assert_equal "Something went wrong", response.error
+      assert_equal "Something went wrong", response.value
       assert_equal "failed", audit_log.status
       assert_match(/Something went wrong/, audit_log.message)
     end
