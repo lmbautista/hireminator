@@ -13,6 +13,12 @@ class ConversationTest < ActiveSupport::TestCase
       purpose: UseCase::PURPOSE_INTERVIEW,
       locale: UseCase::LOCALE_ES
     )
+    @message = Message.new(
+      conversation: @conversation,
+      sender: @user,
+      status: Message::STATUS_SENT,
+      role: Message::ROLE_USER,
+      content: "seguimos en contacto"
     )
   end
 
@@ -64,5 +70,103 @@ class ConversationTest < ActiveSupport::TestCase
 
     assert_not conversation.valid?
     assert conversation.errors.added?(:full_transcript, :blank)
+  end
+
+  test "returns :resume_conversation when status is abandoned" do
+    conversation = Conversation.new(status: Conversation::STATUS_ABANDONED)
+    conversation.stubs(:persisted?).returns(true)
+
+    assert_equal :resume_conversation, conversation.next_conversation_step
+  end
+
+  test "returns :starts_conversation when conversation is not persisted" do
+    conversation = Conversation.new
+
+    assert_equal :start_conversation, conversation.next_conversation_step
+  end
+
+  test "returns :resume_conversation when status is closed" do
+    conversation = Conversation.new(status: Conversation::STATUS_CLOSED)
+    conversation.stubs(:persisted?).returns(true)
+
+    assert_equal :resume_conversation, conversation.next_conversation_step
+  end
+
+  test "returns :continue_conversation when status is opened" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED)
+    conversation.stubs(:persisted?).returns(true)
+
+    assert_equal :continue_conversation, conversation.next_conversation_step
+  end
+
+  test "returns :nothing for unknown status" do
+    conversation = Conversation.new(status: Conversation::STATUS_ARCHIVED)
+    conversation.stubs(:persisted?).returns(true)
+
+    assert_equal :nothing, conversation.next_conversation_step
+  end
+
+  test "can be resumed when abandoned" do
+    conversation = Conversation.new(status: Conversation::STATUS_ABANDONED)
+
+    assert conversation.can_be_resumed?
+  end
+
+  test "can be resumed when closed" do
+    conversation = Conversation.new(status: Conversation::STATUS_CLOSED)
+
+    assert conversation.can_be_resumed?
+  end
+
+  test "can be started" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED)
+
+    assert conversation.can_be_started?
+  end
+
+  test "can be finished when opened and message includes goodbye key" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED, use_case: @use_case)
+    conversation.stubs(:persisted?).returns(true)
+    @message.stubs(:content).returns("Perfecto, seguimos en contacto. ¡Gracias!")
+
+    conversation.messages << @message
+    conversation.stubs(:public_messages).returns([@message])
+
+    assert conversation.can_be_finished?
+  end
+
+  test "cannot be finished if status is not opened" do
+    conversation = Conversation.new(status: Conversation::STATUS_COMPLETED, use_case: @use_case)
+    conversation.stubs(:persisted?).returns(true)
+    @message.stubs(:content).returns("Perfecto, seguimos en contacto. ¡Gracias!")
+
+    conversation.messages << @message
+    conversation.stubs(:public_messages).returns([@message])
+
+    assert_not conversation.can_be_finished?
+  end
+
+  test "cannot be finished if no message matches goodbye key" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED, use_case: @use_case)
+    conversation.stubs(:persisted?).returns(true)
+
+    assert_not conversation.can_be_finished?
+  end
+
+  test "can be finished with different case in goodbye key" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED, use_case: @use_case)
+    conversation.stubs(:persisted?).returns(true)
+
+    @message.stubs(:content).returns("perfecto, seguimos en contacto. hasta pronto!")
+    conversation.stubs(:public_messages).returns([@message])
+
+    assert conversation.can_be_finished?
+  end
+
+  test "cannot be finished if there are no messages" do
+    conversation = Conversation.new(status: Conversation::STATUS_OPENED, use_case: @use_case)
+    message.stubs(:content).returns("seguimos en contacto")
+
+    assert_not conversation.can_be_finished?
   end
 end
