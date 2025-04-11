@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   postgres15:
+    platform: linux/arm64
     image: postgres:15
     container_name: postgres15
     environment:
@@ -13,7 +14,10 @@ services:
       - "5432:5432"
 
   web:
+    platform: linux/arm64
     build: .
+    stdin_open: true
+    tty: true
     container_name: hireminator-web
     volumes:
       - .:/app

@@ -1,0 +1,6 @@
+#!/bin/sh
+exec yarn tailwindcss \
+  --input ./app/assets/stylesheets/application.tailwind.css \
+  --output ./app/assets/builds/tailwind.css \
+  --watch \
+  --poll

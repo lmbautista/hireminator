@@ -1,27 +1,39 @@
 FROM ruby:3.1.0
 
-RUN apt-get update -o Acquire::AllowInsecureRepositories=true \
-  && apt-get install -y --no-install-recommends \
+# Instalar Node.js y npm
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs
+
+# Instalar y configurar Corepack
+RUN corepack enable && \
+    corepack prepare yarn@4.9.1 --activate
+
+RUN apt-get update -qq && apt-get install -y \
   build-essential \
   libpq-dev \
-  curl \
   libxml2-dev \
-  libxslt-dev \
+  libxslt1-dev \
   zlib1g-dev \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN gem install bundler:2.3.11
-
-WORKDIR /app
-
-COPY Gemfile Gemfile.lock ./
+  pkg-config \
+  git \
+  curl \
+  libvips-dev
 
 ENV NOKOGIRI_USE_SYSTEM_LIBRARIES=true
 
-RUN bundle _2.3.11_ install
+WORKDIR /app
 
-RUN bundle exec rake assets:precompile || true
+RUN gem install bundler:2.3.11
+COPY Gemfile .
+COPY Gemfile.lock .
+COPY package.json .
+COPY yarn.lock .
+
+RUN bundle _2.3.11_ install
+RUN yarn install
+
+COPY . .
 
 EXPOSE 3000
 
-CMD ["bin/dev"]
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]

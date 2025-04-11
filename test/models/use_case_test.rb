@@ -67,7 +67,7 @@ class UseCaseTest < ActiveSupport::TestCase
 
   test "full_name returns correct value" do
     use_case = UseCase.new(@valid_attrs)
-    expected_full_name = "EN - Testing interview"
+    expected_full_name = "ES - Testing interview"
 
     assert_equal expected_full_name, use_case.send(:full_name)
   end
