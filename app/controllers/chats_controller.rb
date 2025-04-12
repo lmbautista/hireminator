@@ -23,9 +23,7 @@ class ChatsController < ApplicationController
   end
 
   def upsert
-    if upset_params[:use_case_id].blank?
-      redirect_to chats_path and return
-    end
+    redirect_to chats_path and return if upset_params[:use_case_id].blank?
 
     @use_case = UseCase.find(upset_params[:use_case_id])
 
