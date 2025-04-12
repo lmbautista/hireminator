@@ -64,25 +64,27 @@ class UseCase < ApplicationRecord
   def set_prompts
     self.name ||= full_name
     self.initial_prompt ||= build_initial_prompt.as_json
-    self.resume_prompt ||= build_resume_prompt.as_json
-    self.final_prompt ||= build_final_prompt.as_json
+    self.resume_prompt ||= (build_resume_prompt.presence || resume_prompt_fallback).as_json
+    self.final_prompt ||= (build_final_prompt.presence || final_prompt_fallback).as_json
     self.extraction_prompt ||= build_extraction_prompt.as_json
     self.temperature ||= DEFAULT_TEMPERATURE
   end
 
   def build_initial_prompt
     prompt_key = prompt_for(:initial)
+    goodbye_key = I18n.t("#{prompt_key}.goodbye_key", locale:)
     system_prompt = I18n.t("#{prompt_key}.system", locale:, inputs: inputs.to_json,
-                                                   outputs: outputs.to_json)
+                                                   outputs: outputs.to_json,
+                                                   goodbye_key:)
     user_prompt = I18n.t("#{prompt_key}.user", locale:)
 
     { system: system_prompt, user: user_prompt }.compact
   end
 
   def build_resume_prompt
-    prompt_key = prompt_for(:resume)
-    system_prompt = I18n.t("#{prompt_key}.system", locale:)
-    user_prompt = I18n.t("#{prompt_key}.user", locale:)
+    prompt_for(:resume)
+    system_prompt = I18n.t("use_cases.resume_prompt.system", locale:)
+    user_prompt = I18n.t("use_cases.resume_prompt.user", locale:)
 
     { system: system_prompt, user: user_prompt }.compact
   end
@@ -105,5 +107,19 @@ class UseCase < ApplicationRecord
 
   def prompt_for(prompt_type)
     "use_cases.#{purpose}.#{prompt_type}_prompt"
+  end
+
+  def resume_prompt_fallback
+    {
+      system: I18n.t("use_cases.resume_prompt.system", locale:),
+      user: I18n.t("use_cases.resume_prompt.user", locale:)
+    }
+  end
+
+  def final_prompt_fallback
+    {
+      system: I18n.t("use_cases.final_prompt.system", locale:),
+      user: I18n.t("use_cases.final_prompt.user", locale:)
+    }
   end
 end

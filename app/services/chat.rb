@@ -64,6 +64,7 @@ class Chat
 
   def try_finish_conversation
     return response_success unless conversation.can_be_finished?
+    return response_success if conversation.use_case.final_prompt.blank?
 
     messages = create_system_generated_messages(conversation.use_case.final_prompt)
     communicate_with_client(messages)
@@ -82,6 +83,7 @@ class Chat
 
   def try_archive_conversation
     return response_success unless conversation.can_be_archived?
+    return response_success if conversation.use_case.extraction_prompt.blank?
 
     messages = create_system_generated_messages(conversation.use_case.extraction_prompt)
     communicate_with_client(messages, true).and_then do
