@@ -24,8 +24,7 @@ class ChatsController < ApplicationController
 
   def upsert
     if upset_params[:use_case_id].blank?
-      redirect_to chats_path,
-                  notice: "Por favor selecciona un agente/proceso" and return
+      redirect_to chats_path and return
     end
 
     @use_case = UseCase.find(upset_params[:use_case_id])
