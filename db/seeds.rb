@@ -17,7 +17,7 @@ User.find_or_create_by(
   role: User::ROLE_CANDIDATE
 )
 use_case_name = "Entrevista ZARA"
-inputs = {
+inputs_zara = {
   "empresa" => "ZARA",
   "puesto" => "Responsable de zona",
   "horario" => "Lunes a Viernes de 9:00 a 18:00",
@@ -25,7 +25,7 @@ inputs = {
   "experiencia" => "3 años",
   "idiomas" => "Inglés y Español"
 }
-outputs = {
+outputs_zara = {
   "full_name" => "Nombre completo de la persona",
   "email" => "Email de la persona",
   "phone_number" => "Teléfono de la persona",
@@ -40,12 +40,12 @@ UseCase.new(
   model: UseCase::MODEL_GPT4_MINI,
   purpose: UseCase::PURPOSE_INTERVIEW,
   locale: UseCase::LOCALE_ES,
-  inputs:,
-  outputs:
+  inputs: inputs_zara,
+  outputs: outputs_zara
 ).save!
 
 use_case_name = "Entrevista Huawei"
-inputs = {
+inputs_huawei = {
   "empresa" => "Huawei",
   "puesto" => "Operador telefónico",
   "horario" => "Lunes a Viernes de 8:00 a 15:00",
@@ -53,7 +53,7 @@ inputs = {
   "experiencia" => "2 años",
   "idiomas" => "Inglés, Español y se valoran otros idiomas como Francés o Alemán"
 }
-outputs = {
+outputs_huawei = {
   "full_name" => "Nombre completo de la persona",
   "email" => "Email de la persona",
   "phone_number" => "Teléfono de la persona",
@@ -66,6 +66,25 @@ use_case = UseCase.new(
   model: UseCase::MODEL_GPT4_MINI,
   purpose: UseCase::PURPOSE_INTERVIEW,
   locale: UseCase::LOCALE_ES,
-  inputs:,
-  outputs:
+  inputs: inputs_huawei,
+  outputs: outputs_huawei
+).save!
+
+
+outputs_support_zara = {
+  "doubts" => "Dudas expuestas en la conversación: horarios, contrato, salario, beneficios, documentación, otro...",
+  "summary" => "Breve resumen del problema planteado ",
+  "urgency" => "Nivel de urgencia del problema planteado (bajo, medio, alto)",
+  "solved" => "Si el problema planteado ha sido resuelto o no",
+  "scalation_required" => "true/false (si debe ser enviado al equipo humano)"
+}
+
+UseCase.new(
+  name: "Soporte ZARA",
+  provider: UseCase::PROVIDER_OPENAI,
+  model: UseCase::MODEL_GPT4_MINI,
+  purpose: UseCase::PURPOSE_SUPPORT,
+  locale: UseCase::LOCALE_ES,
+  inputs: inputs_zara,
+  outputs: outputs_support_zara
 ).save!
