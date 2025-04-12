@@ -78,12 +78,12 @@ cd hireminator
 4.**Database creation**
 
 ```bash
-  docker-compose run --rm web rails db:prepare db:seed
+  docker-compose run --rm rails db:prepare db:seed
 ```
 
-6.**Access app in <http://localhost:3000>**
+5.**Access app in <http://localhost:3000>**
 
-7.**Test suite execution**
+6.**Test suite execution**
 
 ```bash
   rails test
