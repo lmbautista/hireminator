@@ -24,19 +24,22 @@
 
 # Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*
-!/storage/.keep
 /tmp/storage/*
 !/tmp/storage/
-!/tmp/storage/.keep
-!/test/fixtures/files/.keep
-!app/assets/builds/.keep
 /public/assets
+**/.keep
+
+# Ignore mac OS X system files
+**/.DS_Store
+
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-
 .env
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
 .byebug_history
+
+node_modules
+/node_modules

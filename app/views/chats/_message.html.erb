@@ -1,0 +1,14 @@
+
+<% if message.user? %>
+  <div>&nbsp;</div>
+  <div class="flex justify-end">
+    <div class="dark:bg-gray-800 bg-white shadow rounded-md max-w-[75%] p-4 space-y-4">
+      <%= pp message.content %>
+    </div>
+  </div>
+<% else %>
+  <div class="flex whitespace-pre-line overflow-y-auto max-h-[60vh] p-4 space-y-4">
+    <%= pp message.content %>
+  </div>
+  <hr/>
+<% end %>

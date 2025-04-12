@@ -1,0 +1,59 @@
+<% content_for :title, "Dashboard" %>
+
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <!-- Panel de estadísticas -->
+  <div class="lg:col-span-1">
+    <div class="overflow-hidden rounded-lg bg-white shadow">
+      <div class="p-6">
+        <h2 class="text-lg font-medium text-gray-900">Estadísticas</h2>
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-gray-500">Candidatos Activos</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">12</dd>
+          </div>
+          <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <dt class="truncate text-sm font-medium text-gray-500">Procesos Abiertos</dt>
+            <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">4</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de chat -->
+  <div class="lg:col-span-2">
+    <% if @active_conversation %>
+      <%= render "shared/chat" %>
+    <% else %>
+      <div class="flex h-full flex-col items-center justify-center p-4 text-center">
+        <img class="h-32 w-32" src="https://placehold.co/128x128" alt="Hireminator Logo">
+        <h1 class="mt-6 text-3xl font-bold tracking-tight text-gray-900">Hireminator</h1>
+        <p class="mt-2 text-lg text-gray-600">Tu asistente de selección inteligente</p>
+        <div class="mt-8 max-w-xl">
+          <h2 class="text-xl font-semibold text-gray-900">¿Cómo puedo ayudarte?</h2>
+          <p class="mt-4 text-gray-600">
+            Selecciona una opción en el panel izquierdo para comenzar una nueva conversación o continuar con una existente.
+          </p>
+          <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+              <h3 class="text-sm font-medium text-gray-900">Entrevista técnica</h3>
+              <p class="mt-1 text-sm text-gray-500">Evalúa las habilidades técnicas del candidato</p>
+            </div>
+            <div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+              <h3 class="text-sm font-medium text-gray-900">Evaluación de habilidades</h3>
+              <p class="mt-1 text-sm text-gray-500">Analiza las competencias del candidato</p>
+            </div>
+            <div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+              <h3 class="text-sm font-medium text-gray-900">Entrevista cultural</h3>
+              <p class="mt-1 text-sm text-gray-500">Evalúa el fit cultural del candidato</p>
+            </div>
+            <div class="rounded-lg bg-white p-4 shadow-sm ring-1 ring-gray-200">
+              <h3 class="text-sm font-medium text-gray-900">Feedback</h3>
+              <p class="mt-1 text-sm text-gray-500">Proporciona feedback al candidato</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
