@@ -60,7 +60,7 @@ outputs = {
   "card_id" => "DNI/NIF de la persona"
 }
 
-UseCase.new(
+use_case = UseCase.new(
   name: use_case_name,
   provider: UseCase::PROVIDER_OPENAI,
   model: UseCase::MODEL_GPT4_MINI,

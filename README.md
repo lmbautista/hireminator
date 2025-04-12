@@ -6,26 +6,46 @@
 
 This project is a conversational AI agent built to act as an assistant capable of conducting multi-turn interviews and collecting structured data from users.
 
-Things we want to cover:
-
-- build full API rest in Rails
-- build tracker for actions audit -> `AuditLogger` (wrapper around all the actions done)
-- build LLM integration layer -> `LLM::ProviderManager`
-- build provider manager -> `LLM::Providers::OpenAI::Manager` (handles)
-- build provider http client -> `LLM::Providers::OpenAI::HTTPClient` (handles connections to LLM)
-- build `LLM::Transcriber` (handles transcription of summaries)
-- build `LLM::Messages` (handles conversations)
-- build `LLM::Summaries` (handles summaries of conversations)
-- build `LLM::ArchivedMessages`
-- more stuff to define
-
-Technical stack:
+**Technical stack:**
 
 - Simple and responsive chat UI using `Hotwire` (`Turbo` + `Stimulus`)
 - `Tailwind` _CSS integration_
 - OpenAI GPT-4 or GPT-3.5 support
 - _Dockerized_ setup for local development
 - `PostgreSQL` database
+
+**Things we have covered:**
+
+- build full API rest in Rails
+- build full ERD:
+  - `User` -> It will have access via any auth system and will generate sessions
+  - `Session` -> User's activity tracking
+  - `UseCase` -> Represet a given use case than an agent can adopt (adaptable per lang)
+  - `Conversation` -> An instance of a given `UseCase` for an `User`. Only one `opened` conversation can exists per `User`
+  - `Message` -> Any message we handle with AI agent that will be part of a `Conversation`
+  - `AuditLog` -> Log system for WHAT was done by WHO and WHEN
+
+  ERD Mapping:
+
+  ```
+                            `AuditLog`
+  ··································································
+    `Session` <-`User` -> `UseCase` -> `Conversation` -> `Message`
+  ··································································
+  ```
+
+- build `Auditing` wrapper: by being used around all the actions done it allows external audit and further details for Stakeholders and Support
+- build `ProviderManager`: abstraction of AI clients that can be configured for each `UseCase`
+- build `Providers::OpenAi`: it simply handles the requests to that specific provider
+- build `Json::Extractor`: it allows extracting JSON structures from conversations while archiving
+- PII encryption to be law compliant is applied in any field related
+
+**Things we didn't have time to cover:**
+
+- Abandoned/closed conversations - quite straightforward solution by using Sidekiq jobs to finalize opened conversations with > x minutes of inactiviy
+- Sentiments analysis - quite straightforward solution by adding a new prompt layer at `UseCase` level + drilling down the field till `Chat` entity
+- RAG - I'm not an expert so, despite I fully understand the technical implications, I chose to finish the UI and bring other extras such as the audit, PII encryption and others.
+- I had to sacrifice partially the test suite, so there's a big room for improvement (good thing is minimum viable was done)
 
 ## Getting Started (Local without Docker)
 
@@ -58,13 +78,7 @@ cd hireminator
 4.**Database creation**
 
 ```bash
-  docker-compose exec run --rm rails db:create db:migrate
-```
-
-5.**Database initialization**
-
-```bash
-  rails db:seeds
+  docker-compose run --rm web rails db:prepare db:seed
 ```
 
 6.**Access app in <http://localhost:3000>**
